@@ -30,6 +30,8 @@ function escapeHtml(text: string): string {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  console.log("send-ammo-alert function called, method:", req.method);
+  
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -37,7 +39,10 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     // Authentication: Get user from JWT token
     const authHeader = req.headers.get("Authorization");
+    console.log("Auth header present:", !!authHeader);
+    
     if (!authHeader) {
+      console.log("No auth header - returning 401");
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -51,7 +56,10 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     const { data: { user }, error: authError } = await supabase.auth.getUser();
+    console.log("Auth result - user:", user?.id, "error:", authError?.message);
+    
     if (authError || !user) {
+      console.log("Auth failed - returning 401");
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
