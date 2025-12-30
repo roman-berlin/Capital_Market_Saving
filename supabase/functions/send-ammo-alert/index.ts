@@ -50,6 +50,8 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+    console.log("Token length:", token.length, "Token starts with:", token.substring(0, 20));
+    
     if (!token) {
       console.log("Auth header missing token - returning 401");
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -59,10 +61,10 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: `Bearer ${token}` } },
-    });
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    
+    // Use service role key to verify the JWT token
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // IMPORTANT: In edge/server environments, getUser() needs the JWT explicitly
     const {
