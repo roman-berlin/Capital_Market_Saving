@@ -170,7 +170,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Portfolio Ammo <alerts@flowbitz.app>",
+        from: "Portfolio Ammo <alerts@automaxity.info>",
         to: [email],
         subject: `AMMO ALERT: ${safeRecommendationType}`,
         html: htmlContent,

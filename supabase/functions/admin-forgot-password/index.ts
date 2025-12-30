@@ -75,7 +75,7 @@ serve(async (req) => {
     });
 
     // Send reset email using fetch
-    const appUrl = req.headers.get("origin") || "https://flowbitz.app";
+    const appUrl = req.headers.get("origin") || "https://automaxity.info";
     const resetLink = `${appUrl}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
 
     const emailResponse = await fetch("https://api.resend.com/emails", {
@@ -85,7 +85,7 @@ serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Portfolio Ammo <noreply@flowbitz.app>",
+        from: "Portfolio Ammo <noreply@automaxity.info>",
         to: [email],
         subject: "Reset Your Password - Portfolio Ammo",
         html: `
