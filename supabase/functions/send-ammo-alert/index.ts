@@ -40,9 +40,18 @@ const handler = async (req: Request): Promise<Response> => {
     // Authentication: Get user from JWT token
     const authHeader = req.headers.get("Authorization");
     console.log("Auth header present:", !!authHeader);
-    
+
     if (!authHeader) {
       console.log("No auth header - returning 401");
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+    if (!token) {
+      console.log("Auth header missing token - returning 401");
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -52,12 +61,16 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } }
+      global: { headers: { Authorization: `Bearer ${token}` } },
     });
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    // IMPORTANT: In edge/server environments, getUser() needs the JWT explicitly
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
     console.log("Auth result - user:", user?.id, "error:", authError?.message);
-    
+
     if (authError || !user) {
       console.log("Auth failed - returning 401");
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
