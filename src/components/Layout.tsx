@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -14,6 +14,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const { isAdmin } = useUserRole();
   const { t } = useLanguage();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
 
   const navItems = [
     { href: '/', label: t('nav.dashboard'), icon: LayoutDashboard },
@@ -52,7 +58,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <NotificationBell />
             <LanguageToggle />
             <ThemeToggle />
-            <Button variant="ghost" size="sm" onClick={signOut} className="gap-2">
+            <Button variant="ghost" size="sm" onClick={handleSignOut} className="gap-2">
               <LogOut className="h-4 w-4" />
               <span className="hidden md:inline">{t('nav.signOut')}</span>
             </Button>

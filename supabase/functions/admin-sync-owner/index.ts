@@ -16,7 +16,6 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 
     // Get requesting user from JWT
     const authHeader = req.headers.get("Authorization");
@@ -27,20 +26,27 @@ serve(async (req) => {
       });
     }
 
-    const anonClient = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
-    const { data: { user }, error: userError } = await anonClient.auth.getUser();
-    
-    if (userError || !user) {
+    const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+    if (!token) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Use service role client for admin operations
+    // Use service role to validate the JWT reliably in edge runtime
     const serviceClient = createClient(supabaseUrl, supabaseServiceKey);
+    const {
+      data: { user },
+      error: userError,
+    } = await serviceClient.auth.getUser(token);
+
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // Check if user already has a role
     const { data: existingRole } = await serviceClient
