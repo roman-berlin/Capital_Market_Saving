@@ -53,13 +53,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
+      // Use local scope so sign-out still works even if the server-side session is already gone
+      await supabase.auth.signOut({ scope: 'local' });
     } catch (error) {
+      // Ignore backend "session not found" errors and still clear local state
       console.error('Sign out error:', error);
     }
-    // Always clear local state even if signOut fails
+
     setSession(null);
     setUser(null);
+    setLoading(false);
   };
 
   return (
