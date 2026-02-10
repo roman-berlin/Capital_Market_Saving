@@ -1,32 +1,21 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { useUserRole } from '@/hooks/useUserRole';
+import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { NotificationBell } from '@/components/NotificationBell';
-import { TrendingUp, Settings, PlusCircle, LayoutDashboard, History, LogOut, Shield } from 'lucide-react';
+import { TrendingUp, Settings, PlusCircle, LayoutDashboard, History } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { signOut } = useAuth();
-  const { isAdmin } = useUserRole();
   const { t } = useLanguage();
   const location = useLocation();
-  const navigate = useNavigate();
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/auth');
-  };
 
   const navItems = [
     { href: '/', label: t('nav.dashboard'), icon: LayoutDashboard },
     { href: '/update', label: t('nav.portfolioUpdate'), icon: PlusCircle },
     { href: '/settings', label: t('nav.settings'), icon: Settings },
     { href: '/logs', label: t('nav.logs'), icon: History },
-    ...(isAdmin ? [{ href: '/admin', label: t('nav.admin'), icon: Shield }] : []),
   ];
 
   return (
@@ -58,10 +47,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <NotificationBell />
             <LanguageToggle />
             <ThemeToggle />
-            <Button variant="ghost" size="sm" onClick={handleSignOut} className="gap-2">
-              <LogOut className="h-4 w-4" />
-              <span className="hidden md:inline">{t('nav.signOut')}</span>
-            </Button>
           </div>
         </div>
         {/* Mobile nav */}
