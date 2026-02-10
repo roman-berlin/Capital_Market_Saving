@@ -324,62 +324,6 @@ export default function Update() {
           <p className="text-muted-foreground">{t('update.subtitle')}</p>
         </div>
 
-        {/* Current Portfolio Values */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>{t('update.currentPortfolio')}</CardTitle>
-                <CardDescription>{t('update.updateHoldings')}</CardDescription>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setEditingValues(!editingValues)}
-              >
-                {editingValues ? t('update.cancel') : t('update.editValues')}
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label className="whitespace-nowrap">SPY ({currencySymbol})</Label>
-                <Input
-                  type="number"
-                  value={valueSp || ''}
-                  onChange={(e) => setValueSp(parseFloat(e.target.value) || 0)}
-                  disabled={!editingValues}
-                  className={!editingValues ? 'bg-muted' : ''}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="whitespace-nowrap">TA-125 ({currencySymbol})</Label>
-                <Input
-                  type="number"
-                  value={valueTa || ''}
-                  onChange={(e) => setValueTa(parseFloat(e.target.value) || 0)}
-                  disabled={!editingValues}
-                  className={!editingValues ? 'bg-muted' : ''}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="whitespace-nowrap">Cash ({currencySymbol})</Label>
-                <Input
-                  type="number"
-                  value={valueCash || ''}
-                  onChange={(e) => setValueCash(parseFloat(e.target.value) || 0)}
-                  disabled={!editingValues}
-                  className={!editingValues ? 'bg-muted' : ''}
-                />
-              </div>
-            </div>
-            <div className="text-right pt-2 border-t">
-              <p className="text-sm text-muted-foreground">{t('update.totalPortfolioValue')}</p>
-              <p className="text-xl font-bold">{currencySymbol}{(valueSp + valueTa + valueCash).toLocaleString()}</p>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* New Contribution */}
         <Card>
@@ -489,71 +433,6 @@ export default function Update() {
           </CardContent>
         </Card>
 
-        {/* Market Status */}
-        {marketDataLoading ? (
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground py-4">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            <span>{t('update.loadingMarket')}</span>
-          </div>
-        ) : marketData?.SPY || marketData?.EIS ? (
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">{t('update.marketData')}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* SPY Data */}
-              {marketData.SPY && (
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-2">{t('update.spyProxy')}</p>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <p className="text-xs text-muted-foreground">{t('update.price')}</p>
-                      <p className="text-lg font-semibold">${Number(marketData.SPY.last_price).toFixed(2)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">{t('update.high52w')}</p>
-                      <p className="text-lg font-semibold">${Number(marketData.SPY.high_52w).toFixed(2)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">{t('update.drawdown')}</p>
-                      <p className="text-lg font-semibold text-destructive">
-                        -{Number(marketData.SPY.current_drawdown).toFixed(1)}%
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              {/* EIS/TA-125 Data */}
-              {marketData.EIS && (
-                <div className="pt-3 border-t">
-                  <p className="text-sm font-medium text-muted-foreground mb-2">{t('update.eisProxy')}</p>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <p className="text-xs text-muted-foreground">{t('update.price')}</p>
-                      <p className="text-lg font-semibold">${Number(marketData.EIS.last_price).toFixed(2)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">{t('update.high52w')}</p>
-                      <p className="text-lg font-semibold">${Number(marketData.EIS.high_52w).toFixed(2)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">{t('update.drawdown')}</p>
-                      <p className="text-lg font-semibold text-destructive">
-                        -{Number(marketData.EIS.current_drawdown).toFixed(1)}%
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
-            <Info className="h-4 w-4" />
-            <span>{t('update.marketUnavailable')}</span>
-          </div>
-        )}
 
         {recommendation && StatusConfig && (
           <Alert>
