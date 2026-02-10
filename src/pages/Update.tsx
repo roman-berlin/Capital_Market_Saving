@@ -448,10 +448,6 @@ export default function Update() {
           </Alert>
         )}
 
-        <Button onClick={saveUpdate} disabled={saving} className="w-full" size="lg">
-          {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-          {saving ? t('update.saving') : t('update.saveUpdate')}
-        </Button>
       </div>
     </Layout>
   );
