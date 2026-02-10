@@ -12,7 +12,7 @@ import Auth from "./pages/Auth";
 import Settings from "./pages/Settings";
 import Update from "./pages/Update";
 import Logs from "./pages/Logs";
-import Admin from "./pages/Admin";
+
 import SetPassword from "./pages/SetPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
@@ -35,7 +35,7 @@ const App = () => (
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/update" element={<Update />} />
                   <Route path="/logs" element={<Logs />} />
-                  <Route path="/admin" element={<Admin />} />
+                  
                   <Route path="/set-password" element={<SetPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="*" element={<NotFound />} />
