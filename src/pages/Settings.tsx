@@ -22,6 +22,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Save, RotateCcw, User, Mail } from 'lucide-react';
 import type { Tables } from '@/integrations/supabase/types';
+import { saveTargetAllocation } from '@/lib/depositAdvisor';
 
 export default function Settings() {
   const { user } = useAuth();
@@ -88,6 +89,13 @@ export default function Settings() {
         stocks_target_percent: (settings.snp_target_percent || 0) + (settings.ta125_target_percent || 0),
         user_id: user!.id,
       }, { onConflict: 'user_id' });
+
+    // Mirror target allocation to localStorage for the deposit advisor
+    saveTargetAllocation({
+      snp: settings.snp_target_percent || 0,
+      ta125: settings.ta125_target_percent || 0,
+      cash: settings.cash_target_percent || 0,
+    });
 
     if (error) {
       toast({ variant: 'destructive', title: t('common.error'), description: error.message });
@@ -277,40 +285,6 @@ export default function Settings() {
             </div>
             <div className={`text-sm font-medium ${allocationError ? 'text-destructive' : 'text-muted-foreground'}`}>
               {t('settings.total')}: {allocationSum}%{allocationError && ` — ${t('settings.mustEqual100')}`}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('settings.cashThresholds')}</CardTitle>
-            <CardDescription>{t('settings.cashThresholdsDescription')}</CardDescription>
-          </CardHeader>
-          <CardContent className="grid grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label>{t('settings.cashMin')}</Label>
-              <Input
-                type="number"
-                value={settings.cash_min_pct}
-                onChange={(e) => updateField('cash_min_pct', parseFloat(e.target.value) || 0)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>{t('settings.cashTarget')}</Label>
-              <Input
-                type="number"
-                value={settings.cash_target_percent}
-                disabled
-              />
-              <p className="text-xs text-muted-foreground">{t('settings.setInTargetAllocation')}</p>
-            </div>
-            <div className="space-y-2">
-              <Label>{t('settings.cashMax')}</Label>
-              <Input
-                type="number"
-                value={settings.cash_max_pct}
-                onChange={(e) => updateField('cash_max_pct', parseFloat(e.target.value) || 0)}
-              />
             </div>
           </CardContent>
         </Card>

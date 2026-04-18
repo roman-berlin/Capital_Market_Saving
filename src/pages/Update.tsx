@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, TrendingDown, TrendingUp, AlertTriangle, CheckCircle, Info } from 'lucide-react';
 import { runStrategy, calculateDrawdown, type StrategyResult, type MarketStatus } from '@/lib/strategy';
 import { getCurrencySymbol } from '@/lib/currency';
+import { PortfolioUpdateFlow } from '@/components/PortfolioUpdateFlow';
 import type { Tables } from '@/integrations/supabase/types';
 
 export default function Update() {
@@ -324,6 +325,10 @@ export default function Update() {
           <p className="text-muted-foreground">{t('update.subtitle')}</p>
         </div>
 
+        {/* New: 2-step Update Portfolio flow with deposit advisor */}
+        <PortfolioUpdateFlow
+          targetPercents={{ snp: snpPercent, ta125: ta125Percent, cash: cashPercent }}
+        />
 
         {/* New Contribution */}
         <Card>
